@@ -1,6 +1,6 @@
-# Go REST API using GIN framework connection to Apache Pulsar
+# Go REST API using GIN framework with Apache Pulsar
 
-This is a GO demo application that showcases the following features:
+This is a **GO** demo application that showcases the following features:
 
 - Implement a REST en point using the [GIN](https://gin-gonic.com/) framework.
 - Using [OpenAPI](https://www.openapis.org/) and the Golang [code generators](https://github.com/deepmap/oapi-codegen)
