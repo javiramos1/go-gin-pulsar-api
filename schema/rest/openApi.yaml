@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Go Gin Ingestion API
+  description: Go Gin Ingestion API
+  
+components:
+  schemas:
+    ingestResponse:
+       type: object
+       properties: 
+        received: 
+          type: boolean
+          example: true
+    
+    data: 
+      type: array
+      items: 
+        type: object
+        properties: 
+          identifier: 
+            type: string
+            example: id1
+          name: 
+            type: string
+            example: name
+          type: 
+            type: string
+            example: test
+          tags: 
+            type: array
+            items: 
+              type: object
+              properties: 
+                type: 
+                  type: string
+                  example: is_numeric
+                value: 
+                  type: string
+                  example: false
+              required:
+                - type
+                - value
+        required:
+          - type
+          - name
+          - identifier
+          
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message
+paths:
+  /data:
+    post:
+      description: Ingest Data into Pulsar
+      operationId: ingestData
+      requestBody:
+        description: Array of data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/data'
+      responses:
+        '200': 
+          description: Ingest Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ingestResponse'
+        default:
+          description: unexpected error 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'          
+          
+          
+          
