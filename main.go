@@ -184,7 +184,7 @@ func setError(e error, c *gin.Context) {
 	})
 }
 
-func health(pulsar *pulsar.IndexService) gin.HandlerFunc {
+func health(pulsar *pulsar.PulsarService) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		err := (*pulsar).HealthCheck()
 

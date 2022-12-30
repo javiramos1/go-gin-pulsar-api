@@ -18,8 +18,8 @@ var ctx = context.Background()
 // TTL Time to live for cache
 const TTL = 60 * time.Minute
 
-type IndexService interface {
-	IndexDocument(item *model.IngestionData)
+type PulsarService interface {
+	PushDocument(item *model.IngestionData)
 	Close() error
 	HealthCheck() error
 }
@@ -42,7 +42,7 @@ func (c *PulsarClient) retry() {
 		}
 		time.Sleep(time.Duration(doc.Retries*2) * time.Millisecond)
 		doc.Retries = doc.Retries + 1
-		c.IndexDocument(doc)
+		c.PushDocument(doc)
 	}
 }
 
@@ -63,7 +63,7 @@ func readSchema(file string) (string, error) {
 }
 
 // New Creates new Service
-func New(connection string, retries int, topic string, retryChannelSize int, retryChannelBuffer int, maxPendingMsg int, schemaPath string) (IndexService, error) {
+func New(connection string, retries int, topic string, retryChannelSize int, retryChannelBuffer int, maxPendingMsg int, schemaPath string) (PulsarService, error) {
 
 	log.Infof("New, connection %s", connection)
 
@@ -140,7 +140,7 @@ func connectPulsarWithRetry(attempts int, sleep time.Duration, connection string
 	return nil, nil, fmt.Errorf("after %d attempts, last error: %s", attempts, err)
 }
 
-func (c *PulsarClient) IndexDocument(doc *model.IngestionData) {
+func (c *PulsarClient) PushDocument(doc *model.IngestionData) {
 	(*c.producer).SendAsync(ctx, &pulsar.ProducerMessage{
 		Value: &doc,
 	}, func(messageID pulsar.MessageID, producerMessage *pulsar.ProducerMessage, err error) {

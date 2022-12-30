@@ -31,7 +31,7 @@ type IngestionServiceParams struct {
 type IngestionService struct {
 	parameters  *IngestionServiceParams
 	dataChannel chan *model.IngestionRequest
-	Producers   []*pulsar.IndexService
+	Producers   []*pulsar.PulsarService
 }
 
 func NewClient(parameters *IngestionServiceParams) (IngestionService, error) {
@@ -40,7 +40,7 @@ func NewClient(parameters *IngestionServiceParams) (IngestionService, error) {
 
 	dataChannel := make(chan *model.IngestionRequest, parameters.ProducerChannelSize)
 
-	producers := []*pulsar.IndexService{}
+	producers := []*pulsar.PulsarService{}
 
 	for p := int64(0); p < int64(parameters.Producers); p++ {
 
@@ -69,14 +69,14 @@ func NewClient(parameters *IngestionServiceParams) (IngestionService, error) {
 
 }
 
-func processDataRoutine(dataChannel chan *model.IngestionRequest, producer *pulsar.IndexService) {
+func processDataRoutine(dataChannel chan *model.IngestionRequest, producer *pulsar.PulsarService) {
 
 	for data := range dataChannel {
 		log.Debugf("processDataRoutine %v", data)
 
 		indexData := data.Parse()
 
-		(*producer).IndexDocument(&indexData)
+		(*producer).PushDocument(&indexData)
 	}
 }
 
