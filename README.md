@@ -16,6 +16,8 @@ It provider automatic retries, self healing, metrics and high scalability. It ca
 
 You can run many workers per producers and create many producers per service.
 
+A companion project which consumes the messages is located [**here**](https://github.com/javiramos1/go-pulsar-elasticsearch).
+
 Metrics are exposed on port **8001** path `/metrics`.
 
 ## Goals
